@@ -1,0 +1,132 @@
+TKINTER + POSTGRESQL + HASHLIB ШПАРГАЛКА
+
+TKINTER (интерфейс)
+
+Создать окно:
+import tkinter as tk
+root = tk.Tk()
+root.title("App")
+root.geometry("400x300")
+root.mainloop()
+
+Кнопка:
+btn = tk.Button(root, text="Войти", command=func)
+btn.pack()
+
+Поле ввода:
+entry = tk.Entry(root)
+entry.pack()
+text = entry.get()
+
+Метка:
+label = tk.Label(root, text="Текст")
+label.pack()
+
+Новое окно:
+win = tk.Toplevel(root)
+
+POSTGRESQL (psycopg2)
+
+Подключение:
+import psycopg2
+
+conn = psycopg2.connect(
+host="localhost",
+dbname="postgres",
+user="postgres",
+password="1111"
+)
+
+cur = conn.cursor()
+
+SQL запросы:
+
+SELECT:
+SELECT * FROM users;
+
+INSERT:
+cur.execute(
+"INSERT INTO users(login, password_hash) VALUES (%s, %s)",
+(login, password)
+)
+
+UPDATE:
+UPDATE users SET login='new' WHERE id=1;
+
+DELETE:
+DELETE FROM users WHERE id=1;
+
+ВАЖНО:
+ВСЕГДА %s вместо f-string (защита SQL injection)
+
+Результаты запроса:
+
+1 строка:
+cur.fetchone()
+
+все строки:
+cur.fetchall()
+
+сохранить:
+conn.commit()
+
+HASHLIB (пароли)
+
+Создание хеша:
+import hashlib
+hash_pw = hashlib.sha256(password.encode()).hexdigest()
+
+Проверка:
+if hashlib.sha256(input_pw.encode()).hexdigest() == db_hash:
+print("OK")
+
+АВТОРИЗАЦИЯ ЛОГИКА:
+
+взять логин и пароль
+захешировать пароль
+SELECT из users
+если найден → вход
+взять роль
+открыть окно
+
+ПРИМЕР ЛОГИНА:
+
+login = entry_login.get()
+password = entry_pass.get()
+
+hash_pw = hashlib.sha256(password.encode()).hexdigest()
+
+cur.execute(
+"SELECT role FROM users WHERE login=%s AND password_hash=%s",
+(login, hash_pw)
+)
+
+user = cur.fetchone()
+
+if user:
+print("OK")
+else:
+print("ERROR")
+
+CRUD:
+
+CREATE = INSERT
+READ = SELECT
+UPDATE = UPDATE
+DELETE = DELETE
+
+СХЕМА ПРОГРАММЫ:
+
+Tkinter → ввод данных
+Python → логика
+hashlib → пароль
+psycopg2 → база
+PostgreSQL → хранение данных
+
+ГЛАВНОЕ:
+
+tkinter = интерфейс
+psycopg2 = база
+hashlib = защита пароля
+SQL = работа с данными
+%s = безопасные запросы
